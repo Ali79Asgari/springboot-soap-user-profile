@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  postgres-user:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: usersdb
+      POSTGRES_USER: ali
+      POSTGRES_PASSWORD: ali
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata-user:/var/lib/postgresql/data
+    networks:
+      - devnet
+
+  postgres-profile:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: profilesdb
+      POSTGRES_USER: ali
+      POSTGRES_PASSWORD: ali
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata-profile:/var/lib/postgresql/data
+    networks:
+      - devnet
+
+  user-service:
+    build: ./user-service
+    depends_on:
+      - postgres-user
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/usersdb
+      SPRING_DATASOURCE_USERNAME: ali
+      SPRING_DATASOURCE_PASSWORD: ali
+    ports:
+      - "8081:8080"
+    networks:
+      - devnet
+
+  profile-service:
+    build: ./profile-service
+    depends_on:
+      - postgres-profile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-profile:5432/profilesdb
+      SPRING_DATASOURCE_USERNAME: ali
+      SPRING_DATASOURCE_PASSWORD: ali
+    ports:
+      - "8082:8080"
+    networks:
+      - devnet
+
+networks:
+  devnet:
+
+volumes:
+  pgdata-user:
+  pgdata-profile:
