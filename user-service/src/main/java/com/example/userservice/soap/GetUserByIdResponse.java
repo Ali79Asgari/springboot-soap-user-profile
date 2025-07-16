@@ -1,4 +1,4 @@
-package com.example.profileservice.soap;
+package com.example.userservice.soap;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
